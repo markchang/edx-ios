@@ -14,6 +14,9 @@ class Course
     url = "http://lms.dev:8000/api/course/" + course_id + "/?format=json"
     p course_id
     BW::HTTP.get(url,{credentials: {username: '###', password: '###'}}) do |response|
+
+      SVProgressHUD.dismiss
+      
       if response.ok?
         result_data = BW::JSON.parse(response.body.to_str)
         self.root = result_data['root']

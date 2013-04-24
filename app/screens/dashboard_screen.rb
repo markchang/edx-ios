@@ -5,13 +5,26 @@ class DashboardScreen < ProMotion::TableScreen
   @table_data = []
 
   def on_load
+    set_nav_bar_right_button "Refresh", action: :get_profile
+    set_nav_bar_left_button "Sign Out", action: :sign_out
   end
 
   def will_appear
   end
 
   def on_appear
-    get_profile
+    # check username password
+    username = App::Persistence['username']
+    password = App::Persistence['password']
+
+    p "Dashboard u/p: %s %s", [username, password]
+
+    if username.nil? or password.nil? then
+      p "Opening Login Screen"
+      open LoginScreen.new, modal: true
+    else
+      get_profile
+    end
   end
 
   def table_data
@@ -24,6 +37,8 @@ class DashboardScreen < ProMotion::TableScreen
   end
 
   def get_profile
+    SVProgressHUD.showWithMaskType(SVProgressHUDMaskTypeClear)
+
     Profile.get do |profile|
       cells = []
       profile.courses.each do |c|
@@ -41,6 +56,15 @@ class DashboardScreen < ProMotion::TableScreen
 
       update_table_data
     end
+  end
+
+  def sign_out
+    App::Persistence['username'] = nil
+    App::Persistence['password'] = nil
+
+    p "Sign out"
+
+    open LoginScreen.new, modal: true
   end
 
 end

@@ -42,6 +42,8 @@ class VideosScreen < ProMotion::TableScreen
   end
 
   def get_videos
+    SVProgressHUD.showWithMaskType(SVProgressHUDMaskTypeClear)
+    
     course.get do |c|
       @table_data = get_videos_from_block(c)
       update_table_data
