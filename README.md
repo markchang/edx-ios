@@ -7,6 +7,10 @@ Uses an internal API, so it is likely not useful for you anytime soon.
 
 Written in the wonderful RubyMotion.
 
-![login](screenshots/login.png "Login Screen")
+![login](screenshots/login.png "Login")
 
-![courses](http://i.imgur.com/TvgzJUjl.png "Courses Screen")
+![courses](screenshots/courses.png "Courses")
+
+![videos](screenshots/videos.png "Videos")
+
+![playback](screenshots/playback.png "Playback")
