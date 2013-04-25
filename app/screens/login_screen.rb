@@ -38,12 +38,18 @@ class LoginScreen < Formotion::FormController
   end
 
   def login
-    p "Username: %s Password: %s", [form.render[:username], form.render[:password]]
     App::Persistence['username'] = form.render[:username]
     App::Persistence['password'] = form.render[:password]
 
-    close
-    # open DashboardScreen.new(nav_bar: true)
+    Profile.test_login do |result|
+      if result == true then
+        close
+      else
+        App.alert("Login failed")
+        App::Persistence['username'] = nil
+        App::Persistence['password'] = nil
+      end
+    end
   end
 
 

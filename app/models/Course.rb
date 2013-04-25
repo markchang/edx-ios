@@ -11,9 +11,13 @@ class Course
   end
 
   def get(&block)
+    username = App::Persistence['username']
+    password = App::Persistence['password']
+
     url = "http://lms.dev:8000/api/course/" + course_id + "/?format=json"
-    p course_id
-    BW::HTTP.get(url,{credentials: {username: '###', password: '###'}}) do |response|
+    BW::HTTP.get(url,{
+        credentials: {username: username, password: password}
+      }) do |response|
 
       SVProgressHUD.dismiss
       

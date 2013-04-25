@@ -10,21 +10,18 @@ class VideosScreen < ProMotion::TableScreen
     get_videos
   end
 
-  def will_appear
-  end
-
-  def on_appear
-  end
-
   def table_data
     @table_data
   end
 
   def show_video(arguments)
+    username = App::Persistence['username']
+    password = App::Persistence['password']
+
     url = "http://lms.dev:8000/api/xblock/" + arguments[:definition]+ "/?format=json"
     youtube_id = ""
 
-    BW::HTTP.get(url) do |response|
+    BW::HTTP.get(url, {credentials: {username: username, password: password}}) do |response|
       if response.ok?
         result_data = BW::JSON.parse(response.body.to_str)
         p result_data
@@ -43,8 +40,9 @@ class VideosScreen < ProMotion::TableScreen
 
   def get_videos
     SVProgressHUD.showWithMaskType(SVProgressHUDMaskTypeClear)
-    
+
     course.get do |c|
+      SVProgressHUD.dismiss
       @table_data = get_videos_from_block(c)
       update_table_data
     end

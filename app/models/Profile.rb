@@ -28,7 +28,20 @@ class Profile
     @courses = courses
   end
 
-  # need to add a username field here
+  def self.test_login(&block)
+    username = App::Persistence['username']
+    password = App::Persistence['password']
+
+    BW::HTTP.get("http://lms.dev:8000/api/profile/" + username + "/?format=json",
+       {credentials: {username: username, password: password}}) do |response|
+      if response.ok?
+        block.call(true)
+      else
+        block.call(false)
+      end
+    end
+  end
+
   def self.get(&block)
     username = App::Persistence['username']
     password = App::Persistence['password']
@@ -36,7 +49,6 @@ class Profile
     BW::HTTP.get("http://lms.dev:8000/api/profile/" + username + "/?format=json",
        {credentials: {username: username, password: password}}) do |response|
 
-      SVProgressHUD.dismiss      
       if response.ok?
         result_data = BW::JSON.parse(response.body.to_str)
         p result_data

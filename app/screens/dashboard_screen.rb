@@ -5,11 +5,16 @@ class DashboardScreen < ProMotion::TableScreen
   @table_data = []
 
   def on_load
-    set_nav_bar_right_button "Refresh", action: :get_profile
-    set_nav_bar_left_button "Sign Out", action: :sign_out
-  end
+    @refresh = UIRefreshControl.alloc.init
+    @refresh.attributedTitle = NSAttributedString.alloc.initWithString("Pull to Refresh")
+    @refresh.addTarget(self, action:'refreshView:', forControlEvents:UIControlEventValueChanged)
+    self.refreshControl = @refresh
 
-  def will_appear
+    on_refresh do
+      get_profile
+    end
+
+    set_nav_bar_left_button "Sign Out", action: :sign_out
   end
 
   def on_appear
@@ -17,10 +22,7 @@ class DashboardScreen < ProMotion::TableScreen
     username = App::Persistence['username']
     password = App::Persistence['password']
 
-    p "Dashboard u/p: %s %s", [username, password]
-
     if username.nil? or password.nil? then
-      p "Opening Login Screen"
       open LoginScreen.new, modal: true
     else
       get_profile
@@ -32,13 +34,10 @@ class DashboardScreen < ProMotion::TableScreen
   end
 
   def show_course(arguments)
-    p arguments[:course_id]
     open_screen VideosScreen.new(course: arguments[:course])
   end
 
   def get_profile
-    SVProgressHUD.showWithMaskType(SVProgressHUDMaskTypeClear)
-
     Profile.get do |profile|
       cells = []
       profile.courses.each do |c|
@@ -55,6 +54,7 @@ class DashboardScreen < ProMotion::TableScreen
       }]
 
       update_table_data
+      end_refreshing
     end
   end
 
@@ -62,9 +62,24 @@ class DashboardScreen < ProMotion::TableScreen
     App::Persistence['username'] = nil
     App::Persistence['password'] = nil
 
-    p "Sign out"
-
     open LoginScreen.new, modal: true
   end
 
+
+  # UIRefreshControl Delegates
+  def refreshView(refresh)
+    refresh.attributedTitle = NSAttributedString.alloc.initWithString("Refreshing data...")
+    @on_refresh.call if @on_refresh
+  end
+
+  def on_refresh(&block)
+    @on_refresh = block
+  end
+
+  def end_refreshing
+    return unless @refresh
+
+    @refresh.attributedTitle = NSAttributedString.alloc.initWithString("Last updated on #{Time.now.strftime("%H:%M:%S")}")
+    @refresh.endRefreshing
+  end
 end
