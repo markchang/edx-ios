@@ -7,4 +7,4 @@ Uses an internal API, so it is likely not useful for you anytime soon.
 
 Written in the wonderful RubyMotion.
 
-[Imgur](http://i.imgur.com/hysthXj.png)
+!http://i.imgur.com/hysthXj.png
