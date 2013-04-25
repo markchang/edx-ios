@@ -1,6 +1,6 @@
 class DashboardScreen < ProMotion::TableScreen
   title "edX"
-  searchable placeholder: "Filter Courses"
+  # searchable placeholder: "Filter Courses"
 
   @table_data = []
 
