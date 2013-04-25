@@ -4,7 +4,7 @@ class LoginScreen < Formotion::FormController
   title "edX Login"
 
   SETTINGS_HASH = {
-    title: "Login",
+    title: "edX Login",
     persist_as: :account_settings,
     sections: [{
       rows: [{

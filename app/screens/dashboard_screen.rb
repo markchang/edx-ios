@@ -23,7 +23,7 @@ class DashboardScreen < ProMotion::TableScreen
     password = App::Persistence['password']
 
     if username.nil? or password.nil? then
-      open LoginScreen.new, modal: true
+      open LoginScreen.new, nav_bar: true, modal: true
     else
       get_profile
     end
@@ -62,7 +62,7 @@ class DashboardScreen < ProMotion::TableScreen
     App::Persistence['username'] = nil
     App::Persistence['password'] = nil
 
-    open LoginScreen.new, modal: true
+    open LoginScreen.new, nav_bar: true, modal: true
   end
 
 
